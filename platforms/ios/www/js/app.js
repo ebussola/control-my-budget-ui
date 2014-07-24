@@ -54,10 +54,30 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 url: "/monthly-goals",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/monthly-goals.html"
+                        templateUrl: "templates/monthly-goals.html",
+                        controller: "MonthlyGoalController"
                     }
                 }
             })
+            .state('app.monthlygoals-new', {
+                url: "/monthly-goals/new",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/monthly-goal-new.html",
+                        controller: "MonthlyGoalNewController"
+                    }
+                }
+            })
+            .state('app.monthlygoals-new-step-2', {
+                url: "/monthly-goals/new-step-2",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/monthly-goal-new-step-2.html",
+                        controller: "MonthlyGoalNewController"
+                    }
+                }
+            })
+
             .state('app.purchases', {
                 url: "/purchases",
                 views: {
@@ -80,5 +100,73 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/my-daily-budget/monthly-goals');
+    })
+
+    .factory(
+    "transformRequestAsFormPost",
+    function () {
+
+        // I prepare the request data for the form post.
+        function transformRequest(data) {
+            return(serializeData(data));
+        }
+
+
+        // Return the factory value.
+        return( transformRequest );
+
+
+        // ---
+        // PRVIATE METHODS.
+        // ---
+
+
+        // I serialize the given Object into a key-value pair string. This
+        // method expects an object and will default to the toString() method.
+        // --
+        // NOTE: This is an atered version of the jQuery.param() method which
+        // will serialize a data collection for Form posting.
+        // --
+        // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
+        function serializeData(data) {
+
+            // If this is not an object, defer to native stringification.
+            if (!angular.isObject(data)) {
+
+                return( ( data == null ) ? "" : data.toString() );
+
+            }
+
+            var buffer = [];
+
+            // Serialize each key in the object.
+            for (var name in data) {
+
+                if (!data.hasOwnProperty(name)) {
+
+                    continue;
+
+                }
+
+                var value = data[ name ];
+
+                buffer.push(
+                    encodeURIComponent(name) +
+                        "=" +
+                        encodeURIComponent(( value == null ) ? "" : value)
+                );
+
+            }
+
+            // Serialize the buffer and clean it up for transportation.
+            var source = buffer
+                    .join("&")
+                    .replace(/%20/g, "+")
+                ;
+
+            return( source );
+
+        }
+
     });
 

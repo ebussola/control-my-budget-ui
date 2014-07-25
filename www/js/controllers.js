@@ -1,4 +1,4 @@
-var api_domain = '192.168.0.20:8000';
+var api_domain = 'localhost:8000';
 
 angular.module('starter.controllers', [])
 
@@ -23,13 +23,37 @@ angular.module('starter.controllers', [])
         $scope.monthly_goals = $http.get('http://' + api_domain + '/api.php/goals').then(function (response) {
             $scope.monthly_goals = response.data;
         });
+
+        $scope.delete_it = function (monthly_goal) {
+            $http.delete('http://' + api_domain + '/api.php/goal/' + monthly_goal.id)
+                .then(function () {
+                    $scope.monthly_goals.splice($scope.monthly_goals.indexOf(monthly_goal), 1);
+                });
+        };
     })
 
-    .controller('MonthlyGoalNewController', function ($rootScope, $scope, $location, $http, $ionicPopup, transformRequestAsFormPost) {
-        if ($location.path() == '/app/monthly-goals/new') {
+    .controller('MonthlyGoalNewController', function ($rootScope, $scope, $location, $http, $ionicPopup, transformRequestAsFormPost, $stateParams, $ionicModal) {
+        var is_creating = ($location.path() == '/app/monthly-goals/new');
+        var is_editing = ($location.path() == '/app/monthly-goals/' + $stateParams.monthly_goal_id + '/edit');
+
+        if (is_creating) {
+            $scope.title = 'Add new Monthly Goal';
             $scope.monthly_goal = {
                 events: []
             };
+
+        } else if (is_editing) {
+            $scope.title = 'Editing Monthly Goal';
+
+            $http.get('http://' + api_domain + '/api.php/goal/' + $stateParams.monthly_goal_id)
+                .then(function (response) {
+                    $scope.monthly_goal = response.data;
+                    if ($scope.monthly_goal.month.length == 1) {
+                        $scope.monthly_goal.month = '0' + $scope.monthly_goal.month;
+                    }
+                    $scope.monthly_goal.date = $scope.monthly_goal.year + '-' + $scope.monthly_goal.month;
+                });
+
         } else {
             $scope.monthly_goal = $rootScope.monthly_goal;
         }
@@ -41,41 +65,70 @@ angular.module('starter.controllers', [])
         };
         reset_event();
 
-        var add_event = function () {
-            $scope.monthly_goal.events.push($scope.event);
-        };
-        $scope.submit_to_step2 = function () {
-            $rootScope.monthly_goal = $scope.monthly_goal;
-            $location.path('/app/monthly-goals/new-step-2');
-        };
-        $scope.add_one_more_event = function () {
-            add_event();
-            $ionicPopup.alert({
-                title: 'Event added',
-                template: 'Press OK to continue'
-            });
-            reset_event();
-        };
-        $scope.finish = function () {
-            if ($scope.event.name != null) {
-                add_event();
+        $scope.add_event = function () {
+            if ($scope.event.id == null) {
+                $scope.monthly_goal.events.push($scope.event);
             }
+            reset_event();
+            $scope.closeModal();
+        };
 
+        $scope.delete_event = function(event) {
+            $scope.monthly_goal.events.splice($scope.monthly_goal.events.indexOf(event), 1);
+        };
+
+        $scope.edit_event = function(event) {
+            $scope.event = event;
+            $scope.openModal();
+        }
+
+        $scope.finish = function () {
             // normalizing data
             var monthly_goal = $scope.monthly_goal;
             monthly_goal.month = monthly_goal.date.split('-')[1];
             monthly_goal.year = monthly_goal.date.split('-')[0];
             delete monthly_goal.date;
 
-            $http.post('http://' + api_domain + '/api.php/goals', {
+            var url;
+            if (is_creating) {
+                url = 'http://' + api_domain + '/api.php/goals';
+            } else  {
+                url = 'http://' + api_domain + '/api.php/goal/' + $scope.monthly_goal.id;
+            }
+            $http.post(url, {
                 monthly_goal: JSON.stringify(monthly_goal)
             }, {
                 transformRequest: transformRequestAsFormPost,
                 headers: {
                     'Content-type': "application/x-www-form-urlencoded; charset=utf-8"
                 }
-            }).then(function() {
+            }).then(function () {
                 $location.path('/app/monthly-goals');
             });
         };
+
+        $ionicModal.fromTemplateUrl('templates/event-form.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+        $scope.openModal = function() {
+            $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+            $scope.modal.hide();
+        };
+        //Cleanup the modal when we're done with it!
+        $scope.$on('$destroy', function() {
+            $scope.modal.remove();
+        });
+        // Execute action on hide modal
+        $scope.$on('modal.hidden', function() {
+            // Execute action
+        });
+        // Execute action on remove modal
+        $scope.$on('modal.removed', function() {
+            // Execute action
+        });
     });

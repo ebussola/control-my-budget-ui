@@ -68,12 +68,13 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                     }
                 }
             })
-            .state('app.monthlygoals-new-step-2', {
-                url: "/monthly-goals/new-step-2",
+
+            .state('app.monthlygoals-edit', {
+                url: '/monthly-goals/:monthly_goal_id/edit',
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/monthly-goal-new-step-2.html",
-                        controller: "MonthlyGoalNewController"
+                        templateUrl: 'templates/monthly-goal-new.html',
+                        controller: 'MonthlyGoalNewController'
                     }
                 }
             })
@@ -102,9 +103,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         $urlRouterProvider.otherwise('/app/my-daily-budget/monthly-goals');
     })
 
-    .factory(
-    "transformRequestAsFormPost",
-    function () {
+    .factory("transformRequestAsFormPost", function () {
 
         // I prepare the request data for the form post.
         function transformRequest(data) {

@@ -1,6 +1,9 @@
-<ion-view title="Add new month budget">
+<ion-view title="{{title}}">
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-clear button-positive" ng-click="openModal()">Add Event</button>
     </ion-nav-buttons>
 
     <ion-content class="has-header">
@@ -10,13 +13,23 @@
                 <input type="month" ng-model="monthly_goal.date">
             </label>
             <label class="item item-input item-stacked-label">
-                <span class="input-label">Budget Limit</span>
+                <span class="input-label">Budget Limit ($)</span>
                 <input type="number" ng-model="monthly_goal.amount_goal">
             </label>
         </div>
 
-        <button class="button button-block button-positive" ng-click="submit_to_step2()">
-            Next
+        <ion-list>
+            <div class="item item-divider">
+                Events
+            </div>
+            <ion-item ng-repeat="event in monthly_goal.events" ng-click="edit_event(event)">
+                {{event.name}} - {{event.category}} ({{event.variation}}%)
+                <ion-option-button class="button-assertive" ng-click="delete_event(event)">Delete</ion-option-button>
+            </ion-item>
+        </ion-list>
+
+        <button nav-clear class="button button-block button-positive" ng-click="finish()">
+            Done
         </button>
     </ion-content>
 </ion-view>

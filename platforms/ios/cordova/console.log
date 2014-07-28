@@ -48,3 +48,36 @@ Terminating in response to SpringBoard's termination.
 2014-07-24 18:20:45.343 control-my-budget-ui[33100:70b] Resetting plugins due to page load.
 2014-07-24 18:20:45.797 control-my-budget-ui[33100:70b] Finished load of: file:///Users/shina/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/B3F96F0B-665E-49C8-8EC6-5A1DB558004C/control-my-budget-ui.app/www/index.html#/app/my-daily-budget/monthly-goals
 Terminating in response to SpringBoard's termination.
+2014-07-25 16:41:20.006 control-my-budget-ui[35052:70b] Multi-tasking -> Device: YES, App: YES
+2014-07-25 16:41:20.058 control-my-budget-ui[35052:70b] Unlimited access to network resources
+2014-07-25 16:41:21.021 control-my-budget-ui[35052:70b] [CDVTimer][keyboard] 0.136018ms
+2014-07-25 16:41:21.021 control-my-budget-ui[35052:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-07-25 16:41:21.022 control-my-budget-ui[35052:70b] [CDVTimer][statusbar] 0.364006ms
+2014-07-25 16:41:21.022 control-my-budget-ui[35052:70b] [CDVTimer][TotalPluginStartup] 1.482010ms
+2014-07-25 16:41:21.190 control-my-budget-ui[35052:70b] Resetting plugins due to page load.
+2014-07-25 16:41:21.631 control-my-budget-ui[35052:70b] Finished load of: file:///Users/shina/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/B3F96F0B-665E-49C8-8EC6-5A1DB558004C/control-my-budget-ui.app/www/index.html#/app/my-daily-budget/monthly-goals
+Terminating in response to SpringBoard's termination.
+2014-07-25 16:55:27.615 control-my-budget-ui[35309:70b] Multi-tasking -> Device: YES, App: YES
+2014-07-25 16:55:27.623 control-my-budget-ui[35309:70b] Unlimited access to network resources
+2014-07-25 16:55:27.695 control-my-budget-ui[35309:70b] [CDVTimer][keyboard] 0.058055ms
+2014-07-25 16:55:27.696 control-my-budget-ui[35309:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-07-25 16:55:27.696 control-my-budget-ui[35309:70b] [CDVTimer][statusbar] 0.379980ms
+2014-07-25 16:55:27.696 control-my-budget-ui[35309:70b] [CDVTimer][TotalPluginStartup] 1.304984ms
+2014-07-25 16:55:27.840 control-my-budget-ui[35309:70b] Resetting plugins due to page load.
+2014-07-25 16:55:27.996 control-my-budget-ui[35309:70b] Finished load of: file:///Users/shina/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/B3F96F0B-665E-49C8-8EC6-5A1DB558004C/control-my-budget-ui.app/www/index.html#/app/my-daily-budget/monthly-goals
+2014-07-25 16:56:03.768 control-my-budget-ui[35485:70b] Multi-tasking -> Device: YES, App: YES
+2014-07-25 16:56:03.775 control-my-budget-ui[35485:70b] Unlimited access to network resources
+2014-07-25 16:56:03.877 control-my-budget-ui[35485:70b] [CDVTimer][keyboard] 0.063002ms
+2014-07-25 16:56:03.877 control-my-budget-ui[35485:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-07-25 16:56:03.877 control-my-budget-ui[35485:70b] [CDVTimer][statusbar] 0.364006ms
+2014-07-25 16:56:03.878 control-my-budget-ui[35485:70b] [CDVTimer][TotalPluginStartup] 1.233995ms
+2014-07-25 16:56:03.912 control-my-budget-ui[35485:70b] Resetting plugins due to page load.
+2014-07-25 16:56:04.011 control-my-budget-ui[35485:70b] Finished load of: file:///Users/shina/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/B3F96F0B-665E-49C8-8EC6-5A1DB558004C/control-my-budget-ui.app/www/index.html#/app/my-daily-budget/monthly-goals
+2014-07-25 16:57:37.005 control-my-budget-ui[35697:70b] Multi-tasking -> Device: YES, App: YES
+2014-07-25 16:57:37.011 control-my-budget-ui[35697:70b] Unlimited access to network resources
+2014-07-25 16:57:37.026 control-my-budget-ui[35697:70b] [CDVTimer][keyboard] 0.053048ms
+2014-07-25 16:57:37.026 control-my-budget-ui[35697:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-07-25 16:57:37.027 control-my-budget-ui[35697:70b] [CDVTimer][statusbar] 0.396013ms
+2014-07-25 16:57:37.027 control-my-budget-ui[35697:70b] [CDVTimer][TotalPluginStartup] 1.308024ms
+2014-07-25 16:57:37.130 control-my-budget-ui[35697:70b] Resetting plugins due to page load.
+2014-07-25 16:57:37.331 control-my-budget-ui[35697:70b] Finished load of: file:///Users/shina/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/B3F96F0B-665E-49C8-8EC6-5A1DB558004C/control-my-budget-ui.app/www/index.html#/app/my-daily-budget/monthly-goals

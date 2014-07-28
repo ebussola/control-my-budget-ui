@@ -73,11 +73,11 @@ angular.module('starter.controllers', [])
             $scope.closeModal();
         };
 
-        $scope.delete_event = function(event) {
+        $scope.delete_event = function (event) {
             $scope.monthly_goal.events.splice($scope.monthly_goal.events.indexOf(event), 1);
         };
 
-        $scope.edit_event = function(event) {
+        $scope.edit_event = function (event) {
             $scope.event = event;
             $scope.openModal();
         }
@@ -92,7 +92,7 @@ angular.module('starter.controllers', [])
             var url;
             if (is_creating) {
                 url = 'http://' + api_domain + '/api.php/goals';
-            } else  {
+            } else {
                 url = 'http://' + api_domain + '/api.php/goal/' + $scope.monthly_goal.id;
             }
             $http.post(url, {
@@ -110,25 +110,43 @@ angular.module('starter.controllers', [])
         $ionicModal.fromTemplateUrl('templates/event-form.html', {
             scope: $scope,
             animation: 'slide-in-up'
-        }).then(function(modal) {
+        }).then(function (modal) {
             $scope.modal = modal;
         });
-        $scope.openModal = function() {
+        $scope.openModal = function () {
             $scope.modal.show();
         };
-        $scope.closeModal = function() {
+        $scope.closeModal = function () {
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
             $scope.modal.remove();
         });
         // Execute action on hide modal
-        $scope.$on('modal.hidden', function() {
+        $scope.$on('modal.hidden', function () {
             // Execute action
         });
         // Execute action on remove modal
-        $scope.$on('modal.removed', function() {
+        $scope.$on('modal.removed', function () {
             // Execute action
         });
+    })
+
+    .controller('ListMonthPurchaseController', function ($scope) {
+        $scope.months = [];
+        for (i = 0; i <= 5; i++) {
+            $scope.months.push((1).months().fromNow().addMonths(-i));
+        }
+    })
+
+    .controller('ListPurchaseController', function ($scope, $http, $stateParams) {
+        var month = parseInt($stateParams.month);
+        var year = parseInt($stateParams.year);
+        var date = Date.today().set({month: month, year: year});
+        var month_lenght = new Date(year, month, 0).getDate();
+        $http.get('http://' + api_domain + '/api.php/purchases/' + date.toString('yyyy-MM-01') + '/' + date.toString('yyyy-MM-') + month_lenght)
+            .then(function (response) {
+                $scope.purchases = response.data;
+            });
     });

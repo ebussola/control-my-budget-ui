@@ -8,8 +8,9 @@
 
     <ion-content class="has-header">
         <ion-list>
-            <ion-item ng-repeat="monthly_goal in monthly_goals | orderBy:'id':true" href="#/app/daily-budget/{{monthly_goal.id}}">
+            <ion-item ng-repeat="monthly_goal in monthly_goals | orderBy:'id':true" href="#/app/monthly-goals/{{monthly_goal.id}}/edit">
                 {{monthly_goal.month}}/{{monthly_goal.year}} - R$ {{monthly_goal.amount_goal}}
+                <ion-option-button class="button-assertive" ng-click="delete_it(monthly_goal)">Delete</ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>

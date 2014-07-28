@@ -140,8 +140,8 @@ angular.module('starter.controllers', [])
         }
     })
 
-    .controller('ListPurchaseController', function ($scope, $http, $stateParams) {
-        var month = parseInt($stateParams.month);
+    .controller('ListPurchaseController', function ($scope, $http, $stateParams, $rootScope, $location) {
+        var month = parseInt($stateParams.month) - 1; // minus 1 because for javascript, January is 0
         var year = parseInt($stateParams.year);
         var date = Date.today().set({month: month, year: year});
         var month_lenght = new Date(year, month, 0).getDate();
@@ -149,4 +149,37 @@ angular.module('starter.controllers', [])
             .then(function (response) {
                 $scope.purchases = response.data;
             });
+
+        $scope.edit = function (purchase) {
+            $rootScope.purchase = purchase;
+            $location.path('/app/purchase/' + purchase.id + '/edit');
+        };
+    })
+
+    .controller('NewPurchaseController', function ($scope, $http) {
+        $scope.title = 'Add Purchase';
+
+        $scope.purchase = {};
+
+        $scope.finish = function () {
+            $http.post('http://' + api_domain + '/api.php/purchases', $scope.purchase)
+                .then(function () {
+                    history.back();
+                });
+        }
+    })
+
+    .controller('EditPurchaseController', function ($scope, $http, $stateParams) {
+        $scope.title = 'Edit Purchase';
+
+        $http.get('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id).then(function (response) {
+            $scope.purchase = response.data;
+        });
+
+        $scope.finish = function () {
+            $http.post('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id, $scope.purchase)
+                .then(function () {
+                    history.back();
+                });
+        }
     });

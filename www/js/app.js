@@ -97,6 +97,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                         controller: 'ListPurchaseController'
                     }
                 }
+            })
+
+            .state('app.purchases-add', {
+                url: "/purchase/new",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/purchase-form.html",
+                        controller: 'NewPurchaseController'
+                    }
+                }
+            })
+
+            .state('app.purchases-edit', {
+                url: "/purchase/:purchase_id/edit",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/purchase-form.html",
+                        controller: 'EditPurchaseController'
+                    }
+                }
             });
 
         // if none of the above states are matched, use this as the fallback

@@ -1,4 +1,4 @@
-var api_domain = 'localhost:8000';
+var api_domain = 'cmb.ebussola.com';
 
 angular.module('starter.controllers', [])
 
@@ -169,17 +169,29 @@ angular.module('starter.controllers', [])
         }
     })
 
-    .controller('EditPurchaseController', function ($scope, $http, $stateParams) {
+    .controller('EditPurchaseController', function ($scope, $http, $stateParams, $ionicPopup) {
         $scope.title = 'Edit Purchase';
-
-        $http.get('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id).then(function (response) {
-            $scope.purchase = response.data;
-        });
 
         $scope.finish = function () {
             $http.post('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id, $scope.purchase)
                 .then(function () {
                     history.back();
                 });
+        }
+
+        $scope.delete_it = function() {
+            var confirmPopup = $ionicPopup.confirm({
+                title: 'IT CAN\'T BE UNDONE',
+                template: 'Are you sure you want to remove this purchase?'
+            });
+
+            confirmPopup.then(function(res) {
+                if (res) {
+                    $http.delete('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id)
+                        .then(function() {
+                            history.back();
+                        });
+                }
+            });
         }
     });

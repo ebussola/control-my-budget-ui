@@ -169,7 +169,7 @@ angular.module('starter.controllers', [])
         }
     })
 
-    .controller('EditPurchaseController', function ($scope, $http, $stateParams) {
+    .controller('EditPurchaseController', function ($scope, $http, $stateParams, $ionicPopup) {
         $scope.title = 'Edit Purchase';
 
         $scope.finish = function () {
@@ -177,5 +177,21 @@ angular.module('starter.controllers', [])
                 .then(function () {
                     history.back();
                 });
+        }
+
+        $scope.delete_it = function() {
+            var confirmPopup = $ionicPopup.confirm({
+                title: 'IT CAN\'T BE UNDONE',
+                template: 'Are you sure you want to remove this purchase?'
+            });
+
+            confirmPopup.then(function(res) {
+                if (res) {
+                    $http.delete('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id)
+                        .then(function() {
+                            history.back();
+                        });
+                }
+            });
         }
     });

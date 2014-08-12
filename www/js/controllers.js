@@ -1,38 +1,49 @@
-var api_domain = 'cmb.ebussola.com';
+var api_domain = 'localhost:8000';
 
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+    .controller('AppCtrl', function (Facebook, cmbFacebook) {
 
-    })
-
-    .controller('MyDailyBudgetMonthlyGoalsController', function ($scope, $http) {
-        $scope.monthly_goals = $http.get('http://' + api_domain + '/api.php/goals').then(function (response) {
-            $scope.monthly_goals = response.data;
+        Facebook.getLoginStatus(function (response) {
+            if (response.status === 'connected') {
+                cmbFacebook.setAccessToken(response.authResponse.accessToken);
+            }
+            else {
+                Facebook.login();
+            }
         });
+
     })
 
-    .controller('MyDailyBudgetController', function ($scope, $http, $stateParams) {
-        $scope.monthly_goals = $http.get('http://' + api_domain + '/api.php/my-daily-budget/' + $stateParams.monthly_goal_id)
+    .controller('MyDailyBudgetMonthlyGoalsController', function ($scope, cmbFacebook) {
+        cmbFacebook.getMonthlyGoals()
+            .then(function (response) {
+                $scope.monthly_goals = response.data;
+            });
+    })
+
+    .controller('MyDailyBudgetController', function ($scope, $stateParams, cmbFacebook) {
+        cmbFacebook.getMyDailyBudget($stateParams.monthly_goal_id)
             .then(function (response) {
                 $scope.daily_budget = response.data;
             });
     })
 
-    .controller('MonthlyGoalController', function ($scope, $http) {
-        $scope.monthly_goals = $http.get('http://' + api_domain + '/api.php/goals').then(function (response) {
-            $scope.monthly_goals = response.data;
-        });
+    .controller('MonthlyGoalController', function ($scope, cmbFacebook) {
+        cmbFacebook.getMonthlyGoals()
+            .then(function (response) {
+                $scope.monthly_goals = response.data;
+            });
 
         $scope.delete_it = function (monthly_goal) {
-            $http.delete('http://' + api_domain + '/api.php/goal/' + monthly_goal.id)
+            cmbFacebook.deleteMonthlyGoal(monthly_goal.id)
                 .then(function () {
                     $scope.monthly_goals.splice($scope.monthly_goals.indexOf(monthly_goal), 1);
                 });
         };
     })
 
-    .controller('MonthlyGoalNewController', function ($rootScope, $scope, $location, $http, $ionicPopup, transformRequestAsFormPost, $stateParams, $ionicModal) {
+    .controller('MonthlyGoalNewController', function ($rootScope, $scope, $location, cmbFacebook, $ionicPopup, transformRequestAsFormPost, $stateParams, $ionicModal) {
         var is_creating = ($location.path() == '/app/monthly-goals/new');
         var is_editing = ($location.path() == '/app/monthly-goals/' + $stateParams.monthly_goal_id + '/edit');
 
@@ -45,7 +56,7 @@ angular.module('starter.controllers', [])
         } else if (is_editing) {
             $scope.title = 'Editing Monthly Goal';
 
-            $http.get('http://' + api_domain + '/api.php/goal/' + $stateParams.monthly_goal_id)
+            cmbFacebook.getMonthlyGoal($stateParams.monthly_goal_id)
                 .then(function (response) {
                     $scope.monthly_goal = response.data;
                     if ($scope.monthly_goal.month.length == 1) {
@@ -89,22 +100,15 @@ angular.module('starter.controllers', [])
             monthly_goal.year = monthly_goal.date.split('-')[0];
             delete monthly_goal.date;
 
-            var url;
             if (is_creating) {
-                url = 'http://' + api_domain + '/api.php/goals';
+                cmbFacebook.createMonthlyGoal(monthly_goal).then(function () {
+                    $location.path('/app/monthly-goals');
+                });
             } else {
-                url = 'http://' + api_domain + '/api.php/goal/' + $scope.monthly_goal.id;
+                cmbFacebook.updateMonthlyGoal($scope.monthly_goal.id, monthly_goal).then(function () {
+                    $location.path('/app/monthly-goals');
+                });
             }
-            $http.post(url, {
-                monthly_goal: JSON.stringify(monthly_goal)
-            }, {
-                transformRequest: transformRequestAsFormPost,
-                headers: {
-                    'Content-type': "application/x-www-form-urlencoded; charset=utf-8"
-                }
-            }).then(function () {
-                $location.path('/app/monthly-goals');
-            });
         };
 
         $ionicModal.fromTemplateUrl('templates/event-form.html', {
@@ -140,12 +144,8 @@ angular.module('starter.controllers', [])
         }
     })
 
-    .controller('ListPurchaseController', function ($scope, $http, $stateParams, $rootScope, $location) {
-        var month = parseInt($stateParams.month) - 1; // minus 1 because for javascript, January is 0
-        var year = parseInt($stateParams.year);
-        var date = Date.today().set({month: month, year: year});
-        var month_lenght = new Date(year, month, 0).getDate();
-        $http.get('http://' + api_domain + '/api.php/purchases/' + date.toString('yyyy-MM-01') + '/' + date.toString('yyyy-MM-') + month_lenght)
+    .controller('ListPurchaseController', function ($scope, $stateParams, $rootScope, $location, cmbFacebook) {
+        cmbFacebook.getPurchases($stateParams.month, $stateParams.year)
             .then(function (response) {
                 $scope.purchases = response.data;
             });
@@ -156,39 +156,39 @@ angular.module('starter.controllers', [])
         };
     })
 
-    .controller('NewPurchaseController', function ($scope, $http) {
+    .controller('NewPurchaseController', function ($scope, cmbFacebook) {
         $scope.title = 'Add Purchase';
 
         $scope.purchase = {};
 
         $scope.finish = function () {
-            $http.post('http://' + api_domain + '/api.php/purchases', $scope.purchase)
+            cmbFacebook.createPurchase($scope.purchase)
                 .then(function () {
                     history.back();
                 });
         }
     })
 
-    .controller('EditPurchaseController', function ($scope, $http, $stateParams, $ionicPopup) {
+    .controller('EditPurchaseController', function ($scope, cmbFacebook, $stateParams, $ionicPopup) {
         $scope.title = 'Edit Purchase';
 
         $scope.finish = function () {
-            $http.post('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id, $scope.purchase)
+            cmbFacebook.updatePurchase($stateParams.purchase_id, $scope.purchase)
                 .then(function () {
                     history.back();
                 });
         }
 
-        $scope.delete_it = function() {
+        $scope.delete_it = function () {
             var confirmPopup = $ionicPopup.confirm({
                 title: 'IT CAN\'T BE UNDONE',
                 template: 'Are you sure you want to remove this purchase?'
             });
 
-            confirmPopup.then(function(res) {
+            confirmPopup.then(function (res) {
                 if (res) {
-                    $http.delete('http://' + api_domain + '/api.php/purchase/' + $stateParams.purchase_id)
-                        .then(function() {
+                    cmbFacebook.deletePurchase($stateParams.purchase_id)
+                        .then(function () {
                             history.back();
                         });
                 }

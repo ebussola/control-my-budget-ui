@@ -1,18 +1,46 @@
-var api_domain = 'localhost:8000';
-
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function (Facebook, cmbFacebook) {
+    .controller('AppCtrl', function (cmbFacebook, $scope, $ionicPopup) {
+        $scope.is_logged = false;
 
-        Facebook.getLoginStatus(function (response) {
-            if (response.status === 'connected') {
-                cmbFacebook.setAccessToken(response.authResponse.accessToken);
-            }
-            else {
-                Facebook.login();
-            }
-        });
+        var _useAccessToken = function(access_token) {
+            cmbFacebook.setAccessToken(access_token);
+            $scope.is_logged = true;
+        };
 
+        document.addEventListener('deviceready', function() {
+            facebookConnectPlugin.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    _useAccessToken(response.authResponse.accessToken);
+                }
+                else {
+                    $scope.login();
+                }
+            });
+        }, false);
+
+        $scope.login = function() {
+            facebookConnectPlugin.login(['public_profile'], function(response) {
+                _useAccessToken(response.authResponse.accessToken);
+            }, function(error) {
+                alert(error);
+            });
+        };
+
+        $scope.logout = function() {
+            var confirmPopup = $ionicPopup.confirm({
+                title: 'Logout',
+                template: 'Do you want to logout of your facebook account?'
+            });
+
+            confirmPopup.then(function(yes) {
+                if (yes) {
+                    facebookConnectPlugin.logout();
+                    cmbFacebook.flushAccessToken();
+                    $scope.is_logged = false;
+                }
+            });
+        };
     })
 
     .controller('MyDailyBudgetMonthlyGoalsController', function ($scope, cmbFacebook) {

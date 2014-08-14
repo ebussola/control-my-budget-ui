@@ -23,6 +23,12 @@
                 <ion-item nav-clear menu-close href="#/app/purchases">
                     Purchases
                 </ion-item>
+                <ion-item nav-clear ng-click="logout()" ng-show="is_logged">
+                    Logout
+                </ion-item>
+                <ion-item nav-clear ng-click="login()" ng-show="!is_logged">
+                    Login
+                </ion-item>
             </ion-list>
         </ion-content>
     </ion-side-menu>

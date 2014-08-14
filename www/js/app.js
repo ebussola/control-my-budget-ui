@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
+angular.module('starter', ['ionic', 'starter.controllers'])
 
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
@@ -190,35 +190,39 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
     })
 
     .factory('cmbFacebook', function ($http, $q, transformRequestAsFormPost) {
-        var deferred = $q.defer();
+        var api_domain = 'cmb.ebussola.com';
 
         return {
-            api_domain: 'cmb.ebussola.com',
+            deferred: $q.defer(),
+
+            flushAccessToken: function() {
+                this.deferred = $q.defer();
+            },
 
             setAccessToken: function (access_token) {
-                deferred.resolve(access_token);
+                this.deferred.resolve(access_token);
             },
 
             getAccessToken: function () {
-                return deferred.promise;
+                return this.deferred.promise;
             },
 
             getMonthlyGoals: function () {
                 return this.getAccessToken().then(function (access_token) {
-                    return $http.get('http://' + this.api_domain + '/api.php/goals?access_token=' + access_token);
+                    return $http.get('http://' + api_domain + '/api.php/goals?access_token=' + access_token);
                 });
             },
 
             getMonthlyGoal: function (monthly_goal_id) {
                 return this.getAccessToken().then(function (access_token) {
-                    return $http.get('http://' + this.api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token);
+                    return $http.get('http://' + api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token);
                 });
             },
 
             createMonthlyGoal: function (monthly_goal) {
                 return this.getAccessToken().then(function (access_token) {
                     return $http.post(
-                        'http://' + this.api_domain + '/api.php/goals?access_token=' + access_token,
+                        'http://' + api_domain + '/api.php/goals?access_token=' + access_token,
                         {
                             monthly_goal: JSON.stringify(monthly_goal)
                         }, {
@@ -234,7 +238,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
             updateMonthlyGoal: function (monthly_goal_id, monthly_goal) {
                 return this.getAccessToken().then(function (access_token) {
                     return $http.post(
-                        'http://' + this.api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token,
+                        'http://' + api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token,
                         {
                             monthly_goal: JSON.stringify(monthly_goal)
                         }, {
@@ -249,13 +253,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
 
             deleteMonthlyGoal: function (monthly_goal_id) {
                 return this.getAccessToken().then(function (access_token) {
-                    return $http.delete('http://' + this.api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token)
+                    return $http.delete('http://' + api_domain + '/api.php/goal/' + monthly_goal_id + '?access_token=' + access_token)
                 });
             },
 
             getMyDailyBudget: function (monthly_goal_id) {
                 return this.getAccessToken().then(function (access_token) {
-                    return $http.get('http://' + this.api_domain + '/api.php/my-daily-budget/' + monthly_goal_id + '?access_token=' + access_token);
+                    return $http.get('http://' + api_domain + '/api.php/my-daily-budget/' + monthly_goal_id + '?access_token=' + access_token);
                 });
             },
 
@@ -266,7 +270,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
                     var date = Date.today().set({month: month, year: year});
                     var month_lenght = new Date(year, month, 0).getDate();
 
-                    return $http.get('http://' + this.api_domain + '/api.php/purchases/'
+                    return $http.get('http://' + api_domain + '/api.php/purchases/'
                         + date.toString('yyyy-MM-01') + '/' + date.toString('yyyy-MM-') + month_lenght
                         + '?access_token=' + access_token)
                 });
@@ -275,7 +279,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
             createPurchase: function (purchase) {
                 return this.getAccessToken().then(function (access_token) {
                     return $http.post(
-                        'http://' + this.api_domain + '/api.php/purchases?access_token=' + access_token,
+                        'http://' + api_domain + '/api.php/purchases?access_token=' + access_token,
                         purchase
                     );
                 });
@@ -284,7 +288,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
             updatePurchase: function (purchase_id, purchase) {
                 return this.getAccessToken().then(function (access_token) {
                     return $http.post(
-                        'http://' + this.api_domain + '/api.php/purchase/' + purchase_id + '?access_token=' + access_token,
+                        'http://' + api_domain + '/api.php/purchase/' + purchase_id + '?access_token=' + access_token,
                         purchase
                     );
                 });
@@ -292,14 +296,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'facebook'])
 
             deletePurchase: function (purchase_id) {
                 return this.getAccessToken().then(function (access_token) {
-                    $http.delete('http://' + this.api_domain + '/api.php/purchase/' + purchase_id + '?access_token=' + access_token)
+                    $http.delete('http://' + api_domain + '/api.php/purchase/' + purchase_id + '?access_token=' + access_token)
                 });
             }
         }
-    })
-
-    .config(function (FacebookProvider, cmbFacebookProvider) {
-        // Set your appId through the setAppId method or
-        // use the shortcut in the initialize method directly.
-        FacebookProvider.init('1446089528999129');
     });
